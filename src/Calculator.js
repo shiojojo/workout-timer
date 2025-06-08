@@ -7,8 +7,15 @@ function Calculator({ workouts, allowSound }) {
   const [sets, setSets] = useState(3);
   const [speed, setSpeed] = useState(90);
   const [durationBreak, setDurationBreak] = useState(5);
+  const [duration, setDuration] = useState(0);
 
-  const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak;
+  useEffect(() => {
+    const totalDuration =
+      (number * sets * speed) / 60 + (sets - 1) * durationBreak;
+    setDuration(totalDuration);
+  }, [number, sets, speed, durationBreak]);
+
+  // const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak;
   const mins = Math.floor(duration);
   const seconds = (duration - mins) * 60;
 
@@ -17,6 +24,13 @@ function Calculator({ workouts, allowSound }) {
     const sound = new Audio(clickSound);
     sound.play();
   }, [allowSound, duration]);
+
+  function handleInc() {
+    setDuration(duration => Math.floor(duration) + 1);
+  }
+  function handleDec() {
+    setDuration(duration => Math.ceil(duration) - 1);
+  }
 
   return (
     <>
@@ -67,13 +81,13 @@ function Calculator({ workouts, allowSound }) {
         </div>
       </form>
       <section>
-        <button onClick={() => {}}>–</button>
+        <button onClick={handleDec}>–</button>
         <p>
           {mins < 10 && '0'}
           {mins}:{seconds < 10 && '0'}
           {seconds}
         </p>
-        <button onClick={() => {}}>+</button>
+        <button onClick={handleInc}>+</button>
       </section>
     </>
   );
